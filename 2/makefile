@@ -1,11 +1,5 @@
 all:	
-	gcc -std=gnu99 -c -fPIC 1.c -o 1.o
-	gcc -shared -o lib1.so 1.o
-	g++ -c -fPIC 2.cpp -o 2.o
-	g++ -shared -L. -l1 -o lib2.so 2.o
-	g++ -c main.cpp
-	g++ main.o -L. -l2 -L. -l1 -o RES
-	
-
-
-	
+	g++ -c -fPIC 2.cpp -o 2.o -I../1
+	g++ -shared -L../1 -lfirst -o libsecond.so 2.o
+	g++ -c main.cpp -I../1 
+	g++ main.o -L. -lsecond -L../1 -I../1 -lfirst -o RES
