@@ -6,6 +6,8 @@
 class  BIGNUMBER {
 public:
 	BIGNUMBER();
+	BIGNUMBER(unsigned long long);
+	BIGNUMBER(char*);
 	BIGNUMBER operator+(BIGNUMBER);
 	BIGNUMBER operator-(BIGNUMBER);
 	BIGNUMBER operator*(BIGNUMBER);
@@ -35,6 +37,16 @@ public:
 	bool WriteBin(char* file);
 	bool WriteText(char* file);
 	void FreeMem();
+	char* Print();
 private:
 	BigNumber number;
 };
+
+%extend BIGNUMBER
+{
+	const char* __str__()
+	{
+    	 return self->Print();
+	}
+};
+
