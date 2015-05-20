@@ -1,4 +1,4 @@
-typedef struct //Младшая часть в 0 блоке
+typedef struct //ГЊГ«Г Г¤ГёГ Гї Г·Г Г±ГІГј Гў 0 ГЎГ«Г®ГЄГҐ
 {
 	unsigned long long* block;
 	unsigned long long size;
@@ -26,3 +26,5 @@ BigNumber ReadTextFile(char* file);
 BigNumber ReadBinFile(char* file);
 int WriteTextFile(char* file, BigNumber number);
 int WriteBinFile(char* file, BigNumber number);
+char* toString(BigNumber number);
+BigNumber ReadFromString(char* buffer);
