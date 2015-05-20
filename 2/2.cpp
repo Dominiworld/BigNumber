@@ -4,6 +4,21 @@
 
 BIGNUMBER::BIGNUMBER(){}
 
+BIGNUMBER::BIGNUMBER(unsigned long long t)
+{
+	BIGNUMBER res;
+	MemoryAllocation(&res.number,1);
+	res.number.block[0]=t;
+	this->number = res.number;
+}
+
+BIGNUMBER::BIGNUMBER(char* str)
+{
+	BIGNUMBER res;
+	res.number = ReadFromString(str);
+	this->number = res.number;
+}
+
 
 BIGNUMBER BIGNUMBER::operator+(BIGNUMBER t)
 {
