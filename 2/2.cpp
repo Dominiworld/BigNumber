@@ -218,5 +218,7 @@ void BIGNUMBER::FreeMem()
 	FreeMemory(&t);
 }
 
-
-
+char* BIGNUMBER::Print()
+{
+  return toString(this->number);
+}
