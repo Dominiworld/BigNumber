@@ -11,7 +11,7 @@ void MemoryAllocation(BigNumber *a, unsigned long long size)
 	memset(a->block, 0, sizeof(unsigned long long)*(a->size));
 }
 
-void Copy(BigNumber *a, BigNumber b)//Êîïèðóåò b â a
+void Copy(BigNumber *a, BigNumber b)//Копирует b в a
 {
 	for (int i = 0; i < b.size; i++)
 	{
@@ -24,7 +24,7 @@ void FreeMemory(BigNumber *a)
 	free(a->block);
 }
 
-BigNumber Sum(BigNumber a, BigNumber b)//×èñëà â êóñî÷íî îáðàòíîé ïîñëåäîâàòåëüíîñòè â ìàññèâàõ 
+BigNumber Sum(BigNumber a, BigNumber b)//Числа в кусочно обратной последовательности в массивах 
 {
 	BigNumber result;
 	BigNumber tmp;
@@ -70,7 +70,7 @@ BigNumber Sum(BigNumber a, BigNumber b)//×èñëà â êóñî÷íî îáðàò
 		:"r"(result.block), "r"(tmp.block), "r"(tmp.size)
 		: "rsi", "rdi", "rcx", "rax"
 	);
-	return Normalize(&result);//Âîçìîæåí ñòàðøèé íóëåâîé áëîê. Òàê îí óáåðåòñÿ
+	return Normalize(&result);//Возможен старший нулевой блок. Так он уберется
 }
 
 BigNumber Sub(BigNumber a, BigNumber b)
@@ -121,7 +121,7 @@ BigNumber Sub(BigNumber a, BigNumber b)
 		: "rsi", "rdi", "rcx", "rax"
 	);
 
-		return Normalize(&result);//Âîçìîæåí ñòàðøèé íóëåâîé áëîê. Òàê îí óáåðåòñÿ
+		return Normalize(&result);//Возможен старший нулевой блок. Так он уберется
 }
 
 
@@ -169,7 +169,7 @@ BigNumber Divide(BigNumber a, BigNumber b, BigNumber *mod)
 
 	if (b.block[b.size-1] == 0)
 	{
-		printf("Äåëåíèå íà íîëü!");
+		printf("Деление на ноль!");
 		return null;
 	}
 	if (Compare(a, b)==-1)
@@ -187,13 +187,13 @@ BigNumber Divide(BigNumber a, BigNumber b, BigNumber *mod)
 
 	for (int i = result.size; i != 0; i--)
 	{
-		unsigned long long Max = 18446744073709551615LLU, Min = 0, Mid;
+		unsigned long long Max = 18446744073709551615ULL, Min = 0, Mid;
 
 		Mid = Max;
 
 		while (Max - Min > 1)
 		{
-			Mid = Max/2 + Min/2;//Âîçìîæíà ïîòåðÿ 1. Íå çíà÷àùàÿ, ïî èäåå
+			Mid = Max/2 + Min/2;//Возможна потеря 1. Не значащая, по идее
 
 			BigNumber tmp = ShortMul(b, Mid);
 			tmp = shiftLeft(&tmp, i - 1);
@@ -510,7 +510,7 @@ int WriteTextFile(char* file, BigNumber number)
 
 	BigNumber tmp;
 
-	//ñ÷èòàåì êîëè÷åñòâî ýëåìåíòîâ âûõîäíîãî ìàññèâà
+	//считаем количество элементов выходного массива
 	unsigned long long ost;
 	unsigned long long  k = 1;
 
@@ -550,7 +550,7 @@ int WriteTextFile(char* file, BigNumber number)
 
 		for (int i = result.size - 2; i > -1; i--)
 		{
-			//íóæíî ïðåäóñìîòðåòü òîò ñëó÷àé, êîãäà êîëè÷åñòâî öèôð < 9	
+			//нужно предусмотреть тот случай, когда количество цифр < 9	
 			char buffer[10] = "000000000";
 			int k = 0;
 			while (result.block[i] > 0)
@@ -617,139 +617,7 @@ BigNumber ReadBinFile(char* file)
 	}
 	return number;
 }
-char* toString(BigNumber number)
-{
-	BigNumber numcopy;
-	MemoryAllocation(&numcopy, number.size);
-	Copy(&numcopy,number);
-
-	BigNumber tmp;
-
-	unsigned long long ost;
-	unsigned long long k = 1;
-
-	if(ShortCompare(number,0)==0)
-		return "0";	
-
-	FILE* stream;
-
-	if ((stream = tmpfile())==NULL)
 	
-	{
-		printf("Temporary file wasn't created!");
-		return "";
-	}
-
-	unsigned long long size = 0;
-
-	while (ShortCompare(numcopy, 0) == 1)
-	{
-		tmp = numcopy;
-		numcopy = ShortDivide(numcopy, 10000000000000000000LLU, &ost);
-		FreeMemory(&tmp);
-
-		char buffer[] = "0000000000000000000";
-		int k = 18;
-		while (ost > 0)
-		{
-			buffer[k--] = ost % 10 + '0';
-			ost /= 10;	
-		}
-		fprintf(stream, "%s", buffer);
-		size++;        
-	}
-
-
-	FreeMemory(&numcopy);
-
-	long long offset = -19;
-
-	fseek(stream, offset, SEEK_END);
-
-	char* str = (char*)malloc(sizeof(char)*(size+1)*19);
-
-	memset(str, '\0', (size+1)*19);
-
-	char tmps [19];	
-	fgets(tmps, 20, stream);
-	int count = 0;
-	while(tmps[count]=='0')
-		count++;
-	int s = 19-count;
-	char sss[19];
-	memset(sss, '\0', 19);
-	int i = 0;
-	while(i!=s)
-		sss[i++]=tmps[count++];
-	strcat(str,sss);
-	offset-=19;
-	fseek(stream, offset, SEEK_END);
-
-	while(offset>-(size+1)*19)
-	{
-		fgets(tmps, 20, stream);
-		strcat(str, tmps);
-		offset-=19;
-		fseek(stream, offset, SEEK_END);
-	}
-
-
-	fclose(stream);
-	
-
-	return str;
-}	
-
-BigNumber ReadFromString(char* buffer)
-{
-	int size = 0;
-	
-	BigNumber res;
-	MemoryAllocation(&res, 1);
-
-	if (buffer == NULL)
-	{
-		printf("Error by reading string!");
-		res.size = 0;
-		return res;
-	}
-	
-	if (strlen(buffer) == 0)
-	{
-		res.size = 0;
-		return res;
-	}
-	
-	BigNumber k;
-	MemoryAllocation(&k,1);
-	k.block[0] = 1;
-		
-	BigNumber tmp1;
-	BigNumber tmp2;
-
-	unsigned long long tmp = 0;
-	char ch;
-
-	for (int i = strlen(buffer)-1; i>-1; i--)
-	{
-	        ch = buffer[i];
-		if ((ch > '9') || (ch < '0'))
-		{
-			printf("Incorrect input!");
-			res.size = 0;
-			return res;
-		}
-		tmp = ch - '0';			
-		tmp1 = ShortMul(k, tmp);
-		tmp2 = Normalize(&tmp1);
-		res = Sum(res, tmp2);
-		FreeMemory(&tmp2);
-		k = ShortMul(k,10);
-	}
-	
-	FreeMemory(&k);
-	return res;
-}	
 
 
 
