@@ -1,10 +1,9 @@
-extern "C"
-{
-#include "1.h"
-}
+%module third
+%{
+#include "second.h"
+%}
 
 class  BIGNUMBER {
-
 public:
 	BIGNUMBER();
 	BIGNUMBER(unsigned long long);
@@ -42,3 +41,12 @@ public:
 private:
 	BigNumber number;
 };
+
+%extend BIGNUMBER
+{
+	const char* __str__()
+	{
+    	 return self->Print();
+	}
+};
+

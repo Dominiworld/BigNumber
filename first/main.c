@@ -2,7 +2,7 @@
 #include <locale.h>
 #include <string.h>
 
-#include "1.h"
+#include "first.h"
 
 void Error()
 {
