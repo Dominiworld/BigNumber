@@ -2,7 +2,7 @@
 #include "second.h"
 
 
-BIGNUMBER::BIGNUMBER(){}
+BIGNUMBER::BIGNUMBER(){ this->number.size = 0;}
 
 BIGNUMBER::BIGNUMBER(unsigned long long t)
 {
