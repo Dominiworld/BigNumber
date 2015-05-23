@@ -647,7 +647,7 @@ char* toString(BigNumber number)
 	while (ShortCompare(numcopy, 0) == 1)
 	{
 		tmp = numcopy;
-		numcopy = ShortDivide(numcopy, 10000000000000000000, &ost);
+		numcopy = ShortDivide(numcopy, 10000000000000000000ULL, &ost);
 		FreeMemory(&tmp);
 
 		char buffer[] = "0000000000000000000";
