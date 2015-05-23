@@ -501,80 +501,22 @@ int WriteTextFile(char* file, BigNumber number)
 {
 	FILE* out;
 
-	BigNumber numcopy;
-	MemoryAllocation( &numcopy, number.size);
-	Copy(&numcopy, number);
-	BigNumber numcopy1;
-	MemoryAllocation( &numcopy1, number.size);
-	Copy(&numcopy1, number);
-
-	BigNumber tmp;
-
-	//считаем количество элементов выходного массива
-	unsigned long long ost;
-	unsigned long long  k = 1;
-
-
-
-	while (ShortCompare(numcopy, 0) == 1)
-	{
-
-		tmp = numcopy;
-		numcopy = ShortDivide(numcopy, 1000000000, &ost);
-		FreeMemory(&tmp);
-		k++;
-	}
-
-
-
-	if (k != 1) k--;
-	BigNumber result;
-	MemoryAllocation(&result, k);
-	
-	int i = 0;
-	while (ShortCompare(numcopy1, 0) == 1)
-	{
-		tmp = numcopy1;
-		numcopy1 = ShortDivide(numcopy1, 1000000000, &ost);
-
-		FreeMemory(&tmp);
-		result.block[i] = ost;
-		i++;
-	}
-
-	result = Normalize(&result);
-
 	if ((out = fopen(file, "w")) != NULL)
 	{
-		fprintf(out, "%llu", result.block[result.size - 1]);
-
-		for (int i = result.size - 2; i > -1; i--)
+		char* str = toString(number);	
+		
+		if(fputs(str, out)==EOF)
 		{
-			//нужно предусмотреть тот случай, когда количество цифр < 9	
-			char buffer[10] = "000000000";
-			int k = 0;
-			while (result.block[i] > 0)
-			{
-				buffer[k++] = result.block[i] % 10 + '0';
-				result.block[i] /= 10;
-			}
-			for (int i = 8; i > -1; i--)
-			{
-				fprintf(out, "%c", buffer[i]);
-			}
+			printf("Error by writing file %s", file);
+			return 0;
 		}
 
 		fclose(out);
-		FreeMemory(&numcopy);
-		FreeMemory(&numcopy1);
-		FreeMemory(&result);
-
 		return 1;
 	}
-	FreeMemory(&numcopy);
-	FreeMemory(&result);
-		printf("Can't open file %s!", file);
-		return 0;
+
+	printf("Error by opening file %s!", file);
+	return 0;
 
 } 
 BigNumber ReadBinFile(char* file)
