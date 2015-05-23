@@ -7,7 +7,7 @@
 void Error()
 {
 	printf("Incorrect input");
-	printf("Input format: Filename1 Operation(+,-,/,\%,m) Filename2 Result");
+	printf("Input format: Filename1 Operation(+,-,/,%%,m) Filename2 Result");
 	printf("or");
 	printf("Filename1 ^ Filename2 Modul Result");
 	printf ("Add -b if files are binary");
