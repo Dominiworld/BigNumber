@@ -22,7 +22,6 @@ BIGNUMBER::BIGNUMBER(char* str)
 
 BIGNUMBER BIGNUMBER::operator+(BIGNUMBER t)
 {
-	printf("Hello!!!!");
 	BIGNUMBER res;
 	res.number = Sum(this->number, t.number);
 	return res;
