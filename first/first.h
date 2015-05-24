@@ -6,7 +6,7 @@ typedef struct //Ìëàäøàÿ ÷àñòü â 0 áëîêå
 
 void MemoryAllocation(BigNumber *a, unsigned long long size);
 void FreeMemory(BigNumber *a);
-void Copy(BigNumber *a, BigNumber b);
+BigNumber Copy(BigNumber a);
 
 BigNumber Sum(BigNumber a, BigNumber b);
 BigNumber Sub(BigNumber a, BigNumber b);
