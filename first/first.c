@@ -176,7 +176,7 @@ BigNumber Divide(BigNumber a, BigNumber b, BigNumber *mod)
 	}
 	if (Compare(a, b)==-1)
 	{
-		mod = Copy(a);
+		*mod = Copy(a);
 		return null;
 	}
 	
@@ -395,7 +395,7 @@ BigNumber Normalize(BigNumber *a)
 	if (a->size == 0) a->size = 1;
 
 	BigNumber result;
-	result = Copy(&a);
+	result = Copy(*a);
 
 	FreeMemory(a);
 
