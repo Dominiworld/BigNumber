@@ -19,6 +19,7 @@ BigNumber Copy(BigNumber a)
 	{
 		res.block[i] = a.block[i];
 	}
+	return res;
 }
 
 void FreeMemory(BigNumber *a)
