@@ -22,6 +22,18 @@ BigNumber Copy(BigNumber a)
 	return res;
 }
 
+BigNumber CopyPlusOne(BigNumber a)
+{
+	BigNumber res;
+	MemoryAllocation(&res, a.size+1);
+	for (int i = 0; i < a.size; i++)
+	{
+		res.block[i] = a.block[i];
+	}
+	return res;
+}
+
+
 void FreeMemory(BigNumber *a)
 {
 	free(a->block);
@@ -33,24 +45,15 @@ BigNumber Sum(BigNumber a, BigNumber b)//Числа в кусочно обрат
 	BigNumber tmp;
 	if (a.size >= b.size)
 	{
-		MemoryAllocation(&result,a.size + 1);
-		for (int i = 0; i < a.size; i++)
-		{
-			result.block[i] = a.block[i];
-		}
-		MemoryAllocation(&tmp,b.size);
-		tmp.block = b.block;
+		result = CopyPlusOne(a);
+		tmp = b;
 	}
 	else
 	{
-		MemoryAllocation(&result,b.size + 1);
-		for (int i = 0; i < b.size; i++)
-		{
-			result.block[i] = b.block[i];
-		}
-		MemoryAllocation(&tmp,a.size);
-		tmp.block = a.block;
+		result = CopyPlusOne(b);
+		tmp = a;
 	}
+
 	asm(	"clc\n"
 		"pushf\n"
 		"movq %0, %%rsi\n"
@@ -82,23 +85,13 @@ BigNumber Sub(BigNumber a, BigNumber b)
 	BigNumber tmp;
 	if (a.size >= b.size)
 	{
-		MemoryAllocation(&result,a.size + 1);
-		for (int i = 0; i < a.size; i++)
-		{
-			result.block[i] = a.block[i];
-		}
-		MemoryAllocation(&tmp,b.size);
-		tmp.block = b.block;
+		result = Copy(a);
+		tmp = b;
 	}
 	else
 	{
-		MemoryAllocation(&result,b.size + 1);
-		for (int i = 0; i < b.size; i++)  
-		{
-			result.block[i] = b.block[i];
-		}
-		MemoryAllocation(&tmp,a.size);
-		tmp.block = a.block;
+		result = Copy(b);
+		tmp = a;
 	}
 	asm
 	(
@@ -170,7 +163,7 @@ BigNumber Divide(BigNumber a, BigNumber b, BigNumber *mod)
 	BigNumber null;
 	MemoryAllocation(&null,1);
 
-	if (b.block[b.size-1] == 0)
+	if (ShortCompare(b,0)==0)
 	{
 		printf("Деление на ноль!");
 		return null;
@@ -318,7 +311,7 @@ BigNumber ShortMul(BigNumber a, unsigned long long b)
 BigNumber ShortDivide(BigNumber a, unsigned long long b, unsigned long long *ost)
 {
 	BigNumber result;
-	if (!b)
+	if (b == 0)
 	{
 		printf("Division by zero!");
 		MemoryAllocation(&result, 1);
@@ -340,7 +333,7 @@ BigNumber ShortDivide(BigNumber a, unsigned long long b, unsigned long long *ost
 	unsigned long long k = 0;
 	BigNumber A;
 	A = Copy(a);
-	
+		
 
 	asm(
 		"movq %1, %%rsi\n"
@@ -360,6 +353,8 @@ BigNumber ShortDivide(BigNumber a, unsigned long long b, unsigned long long *ost
 		: "r"(A.block), "r"(s), "r"(result.block), "r"(A.size), "r"(b)
 		: "rsi", "rdi", "rcx", "rdx", "rax"
 		);
+
+	FreeMemory(&A);
 
 	*ost = k;
 	return Normalize(&result);
@@ -556,6 +551,10 @@ BigNumber ReadBinFile(char* file)
 
 char* toString(BigNumber number)
 {
+
+	if((number.size==0)||(ShortCompare(number,0)==0))
+		return "0";	
+
 	BigNumber numcopy;
 	numcopy = Copy(number);
 
@@ -563,9 +562,6 @@ char* toString(BigNumber number)
 
 	unsigned long long ost;
 	unsigned long long k = 1;
-
-	if(ShortCompare(number,0)==0)
-		return "0";	
 
 	FILE* stream;
 
@@ -580,8 +576,9 @@ char* toString(BigNumber number)
 
 	while (ShortCompare(numcopy, 0) == 1)
 	{
-		tmp = numcopy;
-		numcopy = ShortDivide(numcopy, 10000000000000000000ULL, &ost);
+		tmp = ShortDivide(numcopy, 10000000000000000000ULL, &ost);
+		FreeMemory(&numcopy);
+		numcopy = Copy(tmp);
 		FreeMemory(&tmp);
 
 		char buffer[] = "0000000000000000000";
@@ -628,8 +625,6 @@ char* toString(BigNumber number)
 		offset-=19;
 		fseek(stream, offset, SEEK_END);
 	}
-
-
 	fclose(stream);
 	
 
