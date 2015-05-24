@@ -36,10 +36,10 @@ public:
 	void ReadBin(char* file);
 	bool WriteBin(char* file);
 	bool WriteText(char* file);
-	void FreeMem();
 	char* Print();
 private:
 	BigNumber number;
+	void FreeMem();
 };
 
 %extend BIGNUMBER
