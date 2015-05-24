@@ -11,11 +11,13 @@ void MemoryAllocation(BigNumber *a, unsigned long long size)
 	memset(a->block, 0, sizeof(unsigned long long)*(a->size));
 }
 
-void Copy(BigNumber *a, BigNumber b)//Копирует b в a
+BigNumber Copy(BigNumber a)
 {
-	for (int i = 0; i < b.size; i++)
+	BigNumber res;
+	MemoryAllocation(&res, a.size);
+	for (int i = 0; i < res.size; i++)
 	{
-		a->block[i] = b.block[i];
+		res.block[i] = a.block[i];
 	}
 }
 
@@ -174,7 +176,7 @@ BigNumber Divide(BigNumber a, BigNumber b, BigNumber *mod)
 	}
 	if (Compare(a, b)==-1)
 	{
-		Copy(mod, a);
+		mod = Copy(a);
 		return null;
 	}
 	
@@ -182,8 +184,7 @@ BigNumber Divide(BigNumber a, BigNumber b, BigNumber *mod)
 	MemoryAllocation(&result, a.size - b.size + 1);
 
 	BigNumber A;
-	MemoryAllocation(&A,a.size);
-	Copy(&A,a);
+	A = Copy(a);
 
 	for (int i = result.size; i != 0; i--)
 	{
@@ -232,8 +233,7 @@ BigNumber Pow(BigNumber a, BigNumber p, BigNumber m)
 	unsigned long long ost;
 
 	BigNumber A;
-	MemoryAllocation(&A,a.size);
-	Copy(&A, a);
+	A = Copy(a);
 
 	if (Compare(A, m) != -1)
 	{
@@ -242,8 +242,7 @@ BigNumber Pow(BigNumber a, BigNumber p, BigNumber m)
 	}
 	
 	BigNumber pow;
-	MemoryAllocation(&pow, p.size);
-	Copy(&pow,p);
+	pow = Copy(p);
 
 	for (int i = 0; i < result.size; i++)
 	{
@@ -339,8 +338,7 @@ BigNumber ShortDivide(BigNumber a, unsigned long long b, unsigned long long *ost
 	unsigned long long s = (a.size - 1)*sizeof(unsigned long long);
 	unsigned long long k = 0;
 	BigNumber A;
-	MemoryAllocation(&A,a.size);
-	Copy(&A, a);
+	A = Copy(a);
 	
 
 	asm(
@@ -397,13 +395,7 @@ BigNumber Normalize(BigNumber *a)
 	if (a->size == 0) a->size = 1;
 
 	BigNumber result;
-	MemoryAllocation(&result, a->size);
-
-
-	for (int i = 0; i < a->size; i++)
-	{
-		result.block[i] = a->block[i];
-	}
+	result = Copy(&a);
 
 	FreeMemory(a);
 
@@ -564,8 +556,7 @@ BigNumber ReadBinFile(char* file)
 char* toString(BigNumber number)
 {
 	BigNumber numcopy;
-	MemoryAllocation(&numcopy, number.size);
-	Copy(&numcopy,number);
+	numcopy = Copy(number);
 
 	BigNumber tmp;
 
