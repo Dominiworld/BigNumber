@@ -6,7 +6,6 @@ BIGNUMBER::BIGNUMBER(){ this->number.size = 0;}
 
 BIGNUMBER::~BIGNUMBER(){ FreeMem();};
 
-
 BIGNUMBER::BIGNUMBER(unsigned long long t)
 {
 	BIGNUMBER res;
@@ -50,7 +49,6 @@ BIGNUMBER BIGNUMBER::operator/(BIGNUMBER t)
 	BigNumber ost;
 	BIGNUMBER res;
 	res.number = Divide(this->number, t.number, &ost);
-	FreeMemory(&ost);
 	return res;
 }
 
@@ -58,7 +56,6 @@ BIGNUMBER BIGNUMBER::operator%(BIGNUMBER t)
 {
 	BigNumber ost;
 	BigNumber res = Divide(this->number, t.number, &ost);
-	FreeMemory(&res);
 	BIGNUMBER result;
 	result.number = ost;
 	return result;
@@ -105,7 +102,6 @@ unsigned long long BIGNUMBER::operator%(unsigned long long t)
 	unsigned long long ost;
 	BIGNUMBER res;
 	res.number = ShortDivide(this->number, t, &ost);
-	res.FreeMem();
 	return ost;
 }
 
@@ -173,7 +169,6 @@ BIGNUMBER BIGNUMBER::PowMod(unsigned long long pow, BIGNUMBER mod)
 	MemoryAllocation(&p.number,1);
 	p.number.block[0]=pow;
 	res.number = Pow(this->number, p.number, mod.number);
-	p.FreeMem();
 	return res;
 }
 
@@ -187,8 +182,6 @@ BIGNUMBER BIGNUMBER::PowMod(unsigned long long pow, unsigned long long mod)
 	MemoryAllocation(&m.number,1);
 	m.number.block[0]=mod;
 	res.number = Pow(this->number, p.number, m.number);
-	p.FreeMem();
-	m.FreeMem();
 	return res;
 }
 
