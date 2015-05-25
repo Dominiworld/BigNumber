@@ -7,6 +7,7 @@ class  BIGNUMBER {
 
 public:
 	BIGNUMBER();
+	~BIGNUMBER();
 	BIGNUMBER(unsigned long long);
 	BIGNUMBER(char*);
 	BIGNUMBER operator+(BIGNUMBER);
@@ -37,8 +38,8 @@ public:
 	void ReadBin(char* file);
 	bool WriteBin(char* file);
 	bool WriteText(char* file);
-	void FreeMem();
 	char* Print();
 private:
 	BigNumber number;
+	void FreeMem();
 };
