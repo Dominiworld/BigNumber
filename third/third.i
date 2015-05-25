@@ -49,5 +49,10 @@ private:
 	{
     	 return self->Print();
 	}
+	const char* __repr__()
+{
+     return self->Print();
+}
+
 };
 

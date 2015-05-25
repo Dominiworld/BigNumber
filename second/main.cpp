@@ -27,7 +27,7 @@ int main(int argc, char * argv[])
 	BIGNUMBER b;
 	BIGNUMBER res;
 	BIGNUMBER mod;
-	BIGNUMBER ost;
+    BIGNUMBER ost;
 
 	char* name_a = argv[1];
 	char* name_res;
