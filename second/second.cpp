@@ -4,7 +4,10 @@
 
 BIGNUMBER::BIGNUMBER(){ this->number.size = 0;}
 
-BIGNUMBER::~BIGNUMBER(){ FreeMem();};
+BIGNUMBER::~BIGNUMBER(){
+	FreeMem();
+	printf("Деструктор");
+};
 
 BIGNUMBER::BIGNUMBER(unsigned long long t)
 {
