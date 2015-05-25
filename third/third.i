@@ -6,6 +6,7 @@
 class  BIGNUMBER {
 public:
 	BIGNUMBER();
+	~BIGNUMBER();
 	BIGNUMBER(unsigned long long);
 	BIGNUMBER(char*);
 	BIGNUMBER operator+(BIGNUMBER);
