@@ -25,7 +25,7 @@ BIGNUMBER::BIGNUMBER(char* str)
 }
 
 
-BIGNUMBER BIGNUMBER::operator+(BIGNUMBER t)
+BIGNUMBER& BIGNUMBER::operator+(BIGNUMBER t)
 {
 	BIGNUMBER res;
 	res.number = Sum(this->number, t.number);
