@@ -2,26 +2,26 @@
 #include "second.h"
 
 
-BIGNUMBER::BIGNUMBER(){ this->number.size = 0;}
+BIGNUMBER::BIGNUMBER(){ 
+    this->number.block = NULL;
+    this->number.size = 0;
+}
 
 BIGNUMBER::~BIGNUMBER(){
-	FreeMem();
-	printf("Деструктор");
+    printf("Уничтожаем \"%s\"\n", this->Print());
+    if(this->number.block != NULL){
+    	FreeMem();}
 };
 
 BIGNUMBER::BIGNUMBER(unsigned long long t)
 {
-	BIGNUMBER res;
-	MemoryAllocation(&res.number,1);
-	res.number.block[0]=t;
-	this->number = res.number;
+	MemoryAllocation(&(this->number), 1);
+	this->number.block[0]=t;
 }
 
 BIGNUMBER::BIGNUMBER(char* str)
 {
-	BIGNUMBER res;
-	res.number = ReadFromString(str);
-	this->number = res.number;
+	this->number = ReadFromString(str);
 }
 
 
