@@ -8,7 +8,7 @@ BIGNUMBER::BIGNUMBER(){
 }
 
 BIGNUMBER::~BIGNUMBER(){
-    printf("Уничтожаем \"%s\"\n", this->Print());
+    printf("Уничтожаем \"%s\" указатель %llu\n", this->Print(), this->number.block);
     if(this->number.block != NULL){
     	FreeMem();}
 };
@@ -19,173 +19,151 @@ BIGNUMBER::BIGNUMBER(unsigned long long t)
 	this->number.block[0]=t;
 }
 
+BIGNUMBER::BIGNUMBER(const BigNumber& t)
+{
+	number = Copy(t);
+}
+
+BIGNUMBER::BIGNUMBER(const BIGNUMBER& t)
+{
+	this->number = Copy(t.number);
+}
+
 BIGNUMBER::BIGNUMBER(char* str)
 {
 	this->number = ReadFromString(str);
 }
 
-
-BIGNUMBER& BIGNUMBER::operator+(BIGNUMBER t)
+const BIGNUMBER BIGNUMBER::operator=(const BIGNUMBER& right)
 {
-	BIGNUMBER res;
-	res.number = Sum(this->number, t.number);
-	return res;
+	this->number = Copy(right.number);
+	return *this;
 }
 
-BIGNUMBER BIGNUMBER::operator-(BIGNUMBER t)
+const BIGNUMBER BIGNUMBER::operator+(const BIGNUMBER& t)
 {
-	BIGNUMBER res;
-	res.number = Sub(this->number, t.number);
-	return res;
+	return BIGNUMBER(Sum(this->number, t.number));
+}
+
+const BIGNUMBER BIGNUMBER::operator-(const BIGNUMBER& t)
+{
+	return BIGNUMBER(Sub(this->number, t.number));
 }
 
 
-BIGNUMBER BIGNUMBER::operator*(BIGNUMBER t)
+const BIGNUMBER BIGNUMBER::operator*(const BIGNUMBER& t)
 {
-	BIGNUMBER res;
-	res.number = Mul(this->number, t.number);
-	return res;
+	return BIGNUMBER(Mul(this->number, t.number));
 }
 
-BIGNUMBER BIGNUMBER::operator/(BIGNUMBER t)
+const BIGNUMBER BIGNUMBER::operator/(const BIGNUMBER& t)
 {
 	BigNumber ost;
 	BIGNUMBER res;
 	res.number = Divide(this->number, t.number, &ost);
+	FreeMemory(&ost);
 	return res;
 }
 
-BIGNUMBER BIGNUMBER::operator%(BIGNUMBER t)
+const BIGNUMBER BIGNUMBER::operator%(const BIGNUMBER& t)
 {
 	BigNumber ost;
 	BigNumber res = Divide(this->number, t.number, &ost);
-	BIGNUMBER result;
-	result.number = ost;
-	return result;
+	FreeMemory(&res);
+	return BIGNUMBER(ost);
 }
 
-BIGNUMBER BIGNUMBER::operator+(unsigned long long t)
+const BIGNUMBER BIGNUMBER::operator+(const unsigned long long& t)
 {
-	BIGNUMBER res;
-	BIGNUMBER right;
-	MemoryAllocation(&right.number, 1);
-	right.number.block[0] = t;
-	res.number = Sum(this->number, right.number);
-	return res;
+	return BIGNUMBER(Sum(this->number, BIGNUMBER(t).number));
 }
 
-BIGNUMBER BIGNUMBER::operator-(unsigned long long t)
+const BIGNUMBER BIGNUMBER::operator-(const unsigned long long& t)
 {
-	BIGNUMBER res;
-	BIGNUMBER right;
-	MemoryAllocation(&right.number, 1);
-	right.number.block[0] = t;
-	res.number = Sub(this->number, right.number);
-	return res;
+	return BIGNUMBER(Sub(this->number, BIGNUMBER(t).number));
 }
 
-
-BIGNUMBER BIGNUMBER::operator*(unsigned long long t)
+const BIGNUMBER BIGNUMBER::operator*(const unsigned long long& t)
 {
-	BIGNUMBER res;
-	res.number = ShortMul(this->number, t);
-	return res;
+	return BIGNUMBER(ShortMul(this->number, t));
 }
 
-BIGNUMBER BIGNUMBER::operator/(unsigned long long t)
+const BIGNUMBER BIGNUMBER::operator/(const unsigned long long& t)
 {
 	unsigned long long ost;
-	BIGNUMBER res;
-	res.number = ShortDivide(this->number, t, &ost);
-	return res;
+	return BIGNUMBER(ShortDivide(this->number, t, &ost));
 }
 
-unsigned long long BIGNUMBER::operator%(unsigned long long t)
+const unsigned long long BIGNUMBER::operator%(const unsigned long long& t)
 {
 	unsigned long long ost;
-	BIGNUMBER res;
-	res.number = ShortDivide(this->number, t, &ost);
+	BIGNUMBER res = BIGNUMBER(ShortDivide(this->number, t, &ost));
 	return ost;
 }
 
-bool BIGNUMBER::operator>(BIGNUMBER t)
+bool BIGNUMBER::operator>(const BIGNUMBER& t)
 {
 	return Compare(this->number, t.number) == 1;
 }
 
 
-bool BIGNUMBER::operator>(unsigned long long t)
+bool BIGNUMBER::operator>(const unsigned long long& t)
 {
 	return ShortCompare(this->number, t) == 1;
 }
 
-bool BIGNUMBER::operator<(BIGNUMBER t)
+bool BIGNUMBER::operator<(const BIGNUMBER& t)
 {
 	return Compare(this->number, t.number) == -1;
 }
-bool BIGNUMBER::operator<(unsigned long long t)
+bool BIGNUMBER::operator<(const unsigned long long& t)
 {
 	return ShortCompare(this->number, t) == -1;
 }
 
-bool BIGNUMBER::operator==(BIGNUMBER t)
+bool BIGNUMBER::operator==(const BIGNUMBER& t)
 {
 	return Compare(this->number, t.number) == 0;
 }
 
-bool BIGNUMBER::operator==(unsigned long long t)
+bool BIGNUMBER::operator==(const unsigned long long& t)
 {
 	return ShortCompare(this->number, t) == 0;
 }
 
-bool BIGNUMBER::operator>=(BIGNUMBER t)
+bool BIGNUMBER::operator>=(const BIGNUMBER& t)
 {
 	return Compare(this->number, t.number) != -1;
 }
 
-bool BIGNUMBER::operator>=(unsigned long long t)
+bool BIGNUMBER::operator>=(const unsigned long long& t)
 {
 	return ShortCompare(this->number, t) != -1;
 }
 
-bool BIGNUMBER::operator<=(BIGNUMBER t)
+bool BIGNUMBER::operator<=(const BIGNUMBER& t)
 {
 	return Compare(this->number, t.number) != 1;
 }
 
-bool BIGNUMBER::operator<=(unsigned long long t)
+bool BIGNUMBER::operator<=(const unsigned long long& t)
 {
 	return ShortCompare(this->number, t) != 1;
 }
 
-BIGNUMBER BIGNUMBER::PowMod(BIGNUMBER pow, BIGNUMBER mod)
+const BIGNUMBER BIGNUMBER::PowMod(const BIGNUMBER& pow,const BIGNUMBER& mod)
 {
-	BIGNUMBER res;
-	res.number = Pow(this->number, pow.number, mod.number);
-	return res;
+	return BIGNUMBER(Pow(this->number, pow.number, mod.number));
 }
 
-BIGNUMBER BIGNUMBER::PowMod(unsigned long long pow, BIGNUMBER mod)
+const BIGNUMBER BIGNUMBER::PowMod(const unsigned long long& pow,const BIGNUMBER& mod)
 {
-	BIGNUMBER res;
-	BIGNUMBER p;
-	MemoryAllocation(&p.number,1);
-	p.number.block[0]=pow;
-	res.number = Pow(this->number, p.number, mod.number);
-	return res;
+	return BIGNUMBER(Pow(this->number, BIGNUMBER(pow).number, mod.number));
 }
 
-BIGNUMBER BIGNUMBER::PowMod(unsigned long long pow, unsigned long long mod)
+const BIGNUMBER BIGNUMBER::PowMod(const unsigned long long& pow, const unsigned long long& mod)
 {
-	BIGNUMBER res;
-	BIGNUMBER p;
-	MemoryAllocation(&p.number,1);
-	p.number.block[0]=pow;
-	BIGNUMBER m;
-	MemoryAllocation(&m.number,1);
-	m.number.block[0]=mod;
-	res.number = Pow(this->number, p.number, m.number);
-	return res;
+	return BIGNUMBER(Pow(this->number, BIGNUMBER(pow).number, BIGNUMBER(mod).number));
 }
 
 bool BIGNUMBER::WriteBin(char* file)
@@ -199,21 +177,16 @@ bool BIGNUMBER::WriteText(char* file)
 }
 void BIGNUMBER::ReadText(char* file)
 {
-	BIGNUMBER res;
-	res.number = ReadTextFile(file);
-
-	*this = res;	
+	*this = BIGNUMBER(ReadTextFile(file));	
 }
 void BIGNUMBER::ReadBin(char* file)
 {
-	BIGNUMBER res;
-	res.number = ReadBinFile(file);
-	*this = res;
+	*this = BIGNUMBER(ReadBinFile(file));	
 }
 void BIGNUMBER::FreeMem()
 {
-	BigNumber t = this->number;
-	FreeMemory(&t);
+	FreeMemory(&(this->number));
+	this->number.block = NULL;
 }
 
 char* BIGNUMBER::Print()
