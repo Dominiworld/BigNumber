@@ -9,30 +9,32 @@ public:
 	~BIGNUMBER();
 	BIGNUMBER(unsigned long long);
 	BIGNUMBER(char*);
-	BIGNUMBER operator+(BIGNUMBER);
-	BIGNUMBER operator-(BIGNUMBER);
-	BIGNUMBER operator*(BIGNUMBER);
-	BIGNUMBER operator/(BIGNUMBER);
-	BIGNUMBER operator%(BIGNUMBER);
-	BIGNUMBER operator+(unsigned long long);
-	BIGNUMBER operator-(unsigned long long);
-	BIGNUMBER operator*(unsigned long long);
-	BIGNUMBER operator/(unsigned long long);
-	unsigned long long operator%(unsigned long long);
-	bool operator>(BIGNUMBER);
-	bool operator<(BIGNUMBER);
-	bool operator==(BIGNUMBER);
-	bool operator<=(BIGNUMBER);
-	bool operator>=(BIGNUMBER);
-	bool operator>(unsigned long long);
-	bool operator<(unsigned long long);
-	bool operator==(unsigned long long);
-	bool operator<=(unsigned long long);
-	bool operator>=(unsigned long long);
-
-	BIGNUMBER PowMod(BIGNUMBER pow, BIGNUMBER mod);
-	BIGNUMBER PowMod(unsigned long long pow, BIGNUMBER mod);
-	BIGNUMBER PowMod(unsigned long long pow, unsigned long long mod);
+	BIGNUMBER (const BigNumber& t);
+	BIGNUMBER(const BIGNUMBER& t); //copy constructor
+	const BIGNUMBER operator=(const BIGNUMBER&);
+	const BIGNUMBER operator+(const BIGNUMBER&);
+	const BIGNUMBER operator-(const BIGNUMBER&);
+	const BIGNUMBER operator*(const BIGNUMBER&);
+	const BIGNUMBER operator/(const BIGNUMBER&);
+	const BIGNUMBER operator%(const BIGNUMBER&);
+	const BIGNUMBER operator+(const unsigned long long&);
+	const BIGNUMBER operator-(const unsigned long long&);
+	const BIGNUMBER operator/(const unsigned long long&);
+	const BIGNUMBER operator*(const unsigned long long&);
+	const unsigned long long operator%(const unsigned long long&);
+	bool operator>(const BIGNUMBER&);
+	bool operator<(const BIGNUMBER&);
+	bool operator==(const BIGNUMBER&);
+	bool operator<=(const BIGNUMBER&);
+	bool operator>=(const BIGNUMBER&);
+	bool operator>(const unsigned long long&);
+	bool operator<(const unsigned long long&);
+	bool operator==(const unsigned long long&);
+	bool operator<=(const unsigned long long&);
+	bool operator>=(const unsigned long long&);
+	const BIGNUMBER PowMod(const BIGNUMBER& pow, const BIGNUMBER& mod);
+	const BIGNUMBER PowMod(const unsigned long long& pow, const BIGNUMBER& mod);
+	const BIGNUMBER PowMod(const unsigned long long& pow, const unsigned long long& mod);
 	void ReadText(char* file);
 	void ReadBin(char* file);
 	bool WriteBin(char* file);
@@ -50,9 +52,7 @@ private:
     	 return self->Print();
 	}
 	const char* __repr__()
-{
-     return self->Print();
-}
-
+	{
+     	return self->Print();
+	}	
 };
-
