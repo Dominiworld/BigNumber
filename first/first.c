@@ -433,7 +433,6 @@ BigNumber ReadTextFile(char* file)
 		}
 		if (size == 0)
 		{
-			MemoryAllocation(&result, 1);
 			result.size = 0;
 			return result;
 		}
@@ -450,6 +449,8 @@ BigNumber ReadTextFile(char* file)
 		int offset = -1;
 
 		BigNumber tmp2;
+		BigNumber tmpres;
+		BigNumber tmpk;
 
 		fseek(in, offset, SEEK_END);
 
@@ -463,12 +464,21 @@ BigNumber ReadTextFile(char* file)
 				return result;
 			}
 
+
 			tmp = ch - '0';			
 			tmp1 = ShortMul(k, tmp);
 			tmp2 = Normalize(&tmp1);
+
+			tmpres = result;
 			result = Sum(result, tmp2);
+			FreeMemory(&tmpres);
 			FreeMemory(&tmp2);
+
+
+			tmpk = k;
 			k = ShortMul(k,10);
+			FreeMemory(&tmpk);
+
 			offset--;
 			fseek(in, offset, SEEK_END);
 		}	
