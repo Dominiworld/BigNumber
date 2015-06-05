@@ -161,7 +161,6 @@ asm("movq %0, %%rsi\n"
 BigNumber Divide(BigNumber a, BigNumber b, BigNumber *mod)
 {
 	BigNumber null;
-	MemoryAllocation(&null,1);
 
 	if (ShortCompare(b,0)==0)
 	{
@@ -238,7 +237,9 @@ BigNumber Pow(BigNumber a, BigNumber p, BigNumber m)
 	BigNumber pow;
 	pow = Copy(p);
 
-	for (int i = 0; i < result.size; i++)
+	printf("resultsize=%llu", result.size);
+
+	for (int i = 0; i < pow.size; i++)
 	{
 		for (int j = 0; j < 64; j++)
 		{
@@ -258,6 +259,49 @@ BigNumber Pow(BigNumber a, BigNumber p, BigNumber m)
 	}
 
 	return Normalize(&result);
+}
+unsigned long long ShortPow(BigNumber a, BigNumber p, unsigned long long m)
+{
+
+	BigNumber result;
+	MemoryAllocation(&result, 1);
+	result.block[0]=1;
+
+	BigNumber tmp;
+	BigNumber tmp1;
+
+	tmp1 = Copy(a);
+
+	BigNumber A;
+	MemoryAllocation(&A, 1);
+
+	tmp = ShortDivide(tmp1, m, &A.block[0]);
+	FreeMemory(&tmp);
+	FreeMemory(&tmp1);
+
+	BigNumber pow;
+	pow = Copy(p);
+
+	for (int i = 0; i < pow.size; i++)
+	{
+		for (int j = 0; j < 64; j++)
+		{
+			if((pow.block[i] % 2) !=0)
+			{
+				tmp = ShortMul(result, A.block[0]);
+				tmp1 = ShortDivide(tmp, m, &result.block[0]);
+				FreeMemory(&tmp1);
+				FreeMemory(&tmp);
+			}
+			tmp = Mul(A, A);
+			tmp1 = ShortDivide(tmp,m,&A.block[0]);
+			FreeMemory(&tmp1);
+			FreeMemory(&tmp);
+			pow.block[i]/=2;	
+		}
+	}
+
+	return result.block[0];
 }
 int Compare(BigNumber a, BigNumber b) //-1:a<b 1:a>b 0:a=b 
 {
