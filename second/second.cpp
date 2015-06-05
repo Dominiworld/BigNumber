@@ -163,7 +163,7 @@ const BIGNUMBER BIGNUMBER::PowMod(const unsigned long long& pow,const BIGNUMBER&
 
 const BIGNUMBER BIGNUMBER::PowMod(const unsigned long long& pow, const unsigned long long& mod)
 {
-	return BIGNUMBER(Pow(this->number, BIGNUMBER(pow).number, BIGNUMBER(mod).number));
+	return BIGNUMBER(ShortPow(this->number, BIGNUMBER(pow).number, mod));
 }
 
 bool BIGNUMBER::WriteBin(char* file)
