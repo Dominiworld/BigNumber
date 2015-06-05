@@ -13,6 +13,7 @@ BigNumber Sub(BigNumber a, BigNumber b);
 BigNumber Mul(BigNumber a, BigNumber b);
 BigNumber Divide(BigNumber a, BigNumber b, BigNumber *mod);
 BigNumber Pow(BigNumber a, BigNumber p, BigNumber m);
+unsigned long long ShortPow(BigNumber a, BigNumber p, unsigned long long m);
 int Compare(BigNumber a, BigNumber b);
 BigNumber Normalize(BigNumber *a);
 
