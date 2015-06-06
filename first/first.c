@@ -161,6 +161,7 @@ asm("movq %0, %%rsi\n"
 BigNumber Divide(BigNumber a, BigNumber b, BigNumber *mod)
 {
 	BigNumber null;
+	MemoryAllocation(&null, 1);
 
 	if (ShortCompare(b,0)==0)
 	{
@@ -172,6 +173,8 @@ BigNumber Divide(BigNumber a, BigNumber b, BigNumber *mod)
 		*mod = Copy(a);
 		return null;
 	}
+
+	FreeMemory(&null);
 	
 	BigNumber result;
 	MemoryAllocation(&result, a.size - b.size + 1);
@@ -187,7 +190,9 @@ BigNumber Divide(BigNumber a, BigNumber b, BigNumber *mod)
 
 		while (Max - Min > 1)
 		{
-			Mid = Max/2 + Min/2;//Возможна потеря 1. Не значащая, по идее
+			Mid = Max/2 + Min/2;
+
+			if (Max%2==1 && Min%2==1) Mid++;
 
 			BigNumber tmp = ShortMul(b, Mid);
 			tmp = shiftLeft(&tmp, i - 1);
@@ -203,7 +208,9 @@ BigNumber Divide(BigNumber a, BigNumber b, BigNumber *mod)
 		BigNumber tmp = ShortMul(b, Min);
 		tmp = shiftLeft(&tmp, i - 1);
 
+		BigNumber tmp1 = A;
 		A = Sub(A, tmp);
+		FreeMemory(&tmp1);
 
 		FreeMemory(&tmp);
 
@@ -237,8 +244,6 @@ BigNumber Pow(BigNumber a, BigNumber p, BigNumber m)
 	BigNumber pow;
 	pow = Copy(p);
 
-	printf("resultsize=%llu", result.size);
-
 	for (int i = 0; i < pow.size; i++)
 	{
 		for (int j = 0; j < 64; j++)
@@ -252,9 +257,11 @@ BigNumber Pow(BigNumber a, BigNumber p, BigNumber m)
 			}
 			tmp = Mul(A, A);
 			tmp1 = Divide(tmp,m,&A);
+
 			FreeMemory(&tmp1);
 			FreeMemory(&tmp);
 			pow.block[i]/=2;	
+
 		}
 	}
 
